@@ -492,7 +492,7 @@ const ScanLogs = () => {
                     </TouchableOpacity>
                   ) : (
                     <View style={styles.noLocation}>
-                      <Icon name="location-oarrow" size={18} color="#6B7280" />
+                      <Icon name="location-arrow" size={18} color="#6B7280" />
                       <Text style={styles.noLocationText}>Location data not available</Text>
                     </View>
                   )}

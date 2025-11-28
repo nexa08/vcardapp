@@ -20,12 +20,12 @@ const GREEN_SUCCESS = '#10B981';
 
 // Sample data for the Landing Page preview card
 const SAMPLE_CARD_DATA = {
-    name: 'Alex Johnson',
-    title: 'Senior Marketing Strategist',
-    company: 'VeeCard Solutions',
-    phone: '+1 (408) 555-0199',
-    email: 'alex@veecard.com',
-    url: 'veecard.com/alex',
+    name: 'Nexa The Icon',
+    title: 'Senior Developer',
+    company: 'VCard App',
+    phone: '+255 (0) 622  255 496',
+    email: 'nexa.theicon@gmail.com',
+    url: 'nexatheiconn.netlify.app',
 };
 
 // Data for the new Testimonial Grid
@@ -47,6 +47,34 @@ const TESTIMONIAL_DATA = [
     },
 ];
 
+// How It Works Steps
+const HOW_IT_WORKS_DATA = [
+    {
+        step: "01",
+        title: "Sign Up & Create",
+        description: "Register for free and set up your digital business card in less than 2 minutes",
+        icon: "user-plus"
+    },
+    {
+        step: "02",
+        title: "Customize Your Card",
+        description: "Add your photo, contact details, social links, and company information",
+        icon: "pencil"
+    },
+    {
+        step: "03",
+        title: "Share Instantly",
+        description: "Use your unique QR code or shareable link to connect with anyone, anywhere",
+        icon: "share-alt"
+    },
+    {
+        step: "04",
+        title: "Track & Analyze",
+        description: "Monitor who views your card and get insights on your connections",
+        icon: "bar-chart"
+    }
+];
+
 // --- Icon Mapping ---
 const IconMap = {
     Mail: (props) => <Icon name="envelope" {...props} />,
@@ -55,12 +83,12 @@ const IconMap = {
     Link: (props) => <Icon name="link" {...props} />,
     User: (props) => <Icon name="user" {...props} />,
     Key: (props) => <Icon name="tag" {...props} />,
-    ArrowLeft: (props) => <Icon name="arrow-back" {...props} />,
+    ArrowLeft: (props) => <Icon name="arrow-left" {...props} />,
     Send: (props) => <Icon name="send" {...props} />,
     Home: (props) => <Icon name="home" {...props} />,
     QrCode: (props) => <Icon name="qr-code-" {...props} />,
-    Sync: (props) => <Icon name="sync" {...props} />,
-    Stats: (props) => <Icon name="stats" {...props} />,
+    Sync: (props) => <Icon name="refresh" {...props} />,
+    Stats: (props) => <Icon name="bar-chart" {...props} />,
 };
 
 // --- Sub-Components ---
@@ -85,105 +113,21 @@ const TestimonialCard = ({ quote, source, title }) => (
     </View>
 );
 
-const getInitials = (name) => {
-    if (!name) return 'A';
-    const parts = name.split(' ');
-    if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
-    return parts.map(n => n[0]).join('').toUpperCase();
-}
-
-const getIconComponent = (type) => {
-    switch(type) {
-        case 'phone': return IconMap.Phone;
-        case 'email': return IconMap.Mail;
-        case 'url': return IconMap.Link;
-        case 'text': return IconMap.Briefcase;
-        default: return IconMap.User;
-    }
-}
-
-const VCardLink = ({ label, value, type, isInteractive = true }) => {
-    if (!value) return null;
-    const IconComponent = getIconComponent(type);
-
-    const handlePress = () => {
-        if (isInteractive) {
-            console.log(`Attempting to open link for: ${value}`);
-        }
-    };
-
-    return (
-        <TouchableOpacity 
-            onPress={handlePress}
-            disabled={!isInteractive}
-            style={[
-                styles.vCardLink,
-                !isInteractive && styles.vCardLinkPreview,
-            ]}
-        >
-            <View style={styles.vCardLinkIconBg}>
-                <IconComponent size={16} color="white" /> 
-            </View>
-            <View style={styles.vCardLinkContent}>
-                <Text style={styles.vCardLinkLabel}>{label}</Text>
-                <Text style={styles.vCardLinkValue}>{value}</Text>
-            </View>
-            {isInteractive && <IconMap.Send size={16} color={MEDIUM_TEXT} />}
-        </TouchableOpacity>
-    );
-};
-
-const VCardPreviewCard = ({ data, isInteractive = true, style, showQR = false }) => {
-    const cardData = { ...SAMPLE_CARD_DATA, ...data };
-
-    // Generate vCard string for QR code
-    const generateVCard = () => {
-        const vCard = [
-            'BEGIN:VCARD',
-            'VERSION:3.0',
-            `FN:${cardData.name || 'Your Name'}`,
-            `TITLE:${cardData.title || 'Your Title'}`,
-            `ORG:${cardData.company || 'Your Company'}`,
-            `TEL:${cardData.phone || ''}`,
-            `EMAIL:${cardData.email || ''}`,
-            `URL:${cardData.url || ''}`,
-            'END:VCARD'
-        ].join('\n');
-        return vCard;
-    };
-
-    return (
-        <View style={[styles.cardContainer, !isInteractive && styles.previewCardContainer, style]}>
-            <View style={styles.profileSection}>
-                <View style={styles.profileImageContainer}>
-                    <Text style={styles.profileImageText}>{getInitials(cardData.name)}</Text>
+const HowItWorksStep = ({ step, title, description, icon, isLast }) => (
+    <View style={styles.stepContainer}>
+        <View style={styles.stepContent}>
+            <View style={styles.stepNumberContainer}>
+                <Text style={styles.stepNumber}>{step}</Text>
+                <View style={styles.stepIcon}>
+                    <Icon name={icon} size={20} color="white" />
                 </View>
-                <Text style={styles.nameText}>{cardData.name || 'Your Full Name'}</Text>
-                <Text style={styles.titleText}>{cardData.title || 'Job Title'}</Text>
-                <Text style={styles.companyText}>at {cardData.company || 'Company Name'}</Text>
-                
-                {/* Show QR Code in preview if enabled */}
-                {showQR && (cardData.name || cardData.email) && (
-                    <View style={styles.previewQRCode}>
-                        <QRCode 
-                            value={generateVCard()} 
-                            size={80}
-                        />
-                        <Text style={styles.qrCodeHint}>Scan to save contact</Text>
-                    </View>
-                )}
             </View>
-
-            <View style={styles.contactLinksSection}>
-                <Text style={styles.contactLinksTitle}>Quick Contact</Text>
-                <VCardLink label="Call Me" value={cardData.phone} type="phone" isInteractive={isInteractive} />
-                <VCardLink label="Send Email" value={cardData.email} type="email" isInteractive={isInteractive} />
-                <VCardLink label="Visit Website" value={cardData.url} type="url" isInteractive={isInteractive} />
-                <VCardLink label="Company" value={cardData.company} type="text" isInteractive={isInteractive} />
-            </View>
+            <Text style={styles.stepTitle}>{title}</Text>
+            <Text style={styles.stepDescription}>{description}</Text>
         </View>
-    );
-};
+        {!isLast && <View style={styles.stepConnector} />}
+    </View>
+);
 
 const VCardDisplay = ({ data, navigate }) => {
     const [isSaved, setIsSaved] = useState(false);
@@ -224,11 +168,9 @@ const VCardDisplay = ({ data, navigate }) => {
                         </TouchableOpacity>
                     </View>
 
-                    <VCardPreviewCard data={displayData} isInteractive={true} />
-
                     {isSaved && (
                         <View style={styles.cacheConfirmation}>
-                            <Icon name="checkmark-circle" size={24} color={GREEN_SUCCESS} />
+                            <Icon name="check-circle" size={24} color={GREEN_SUCCESS} />
                             <Text style={styles.cacheConfirmationText}>Card created & ready to share!</Text>
                         </View>
                     )}
@@ -250,7 +192,7 @@ const VCardDisplay = ({ data, navigate }) => {
                                 <Text style={styles.shareButtonText}>Save QR Code</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.shareButton}>
-                                <Icon name="share-social" size={20} color={PRIMARY_COLOR} />
+                                <Icon name="share" size={20} color={PRIMARY_COLOR} />
                                 <Text style={styles.shareButtonText}>Share Card</Text>
                             </TouchableOpacity>
                         </View>
@@ -278,15 +220,6 @@ const InputField = ({ Icon, name, placeholder, type = 'default', value, onChange
 );
 
 const LandingPage = ({ navigate }) => {
-    const [formData, setFormData] = useState({
-        name: '',
-        title: '',
-        company: '',
-        phone: '',
-        email: '',
-        url: '',
-    });
-
     // Contact form state
     const [contactData, setContactData] = useState({
         username: '',
@@ -294,22 +227,8 @@ const LandingPage = ({ navigate }) => {
         message: ''
     });
 
-    const handleInputChange = (name, value) => {
-        setFormData(prev => ({ ...prev, [name]: value }));
-    };
-
     const handleContactChange = (name, value) => {
         setContactData(prev => ({ ...prev, [name]: value }));
-    };
-
-    const handleSubmit = () => {
-        if (!formData.name || !formData.email) {
-            triggerLocalNotification('Missing Information', 'Please fill in Name and Email to generate your card.');
-            return;
-        }
-        
-        console.log("Form Submitted, Displaying Card:", formData);
-        navigate('display', formData);
     };
 
     const handleContactSubmit = async () => {
@@ -433,62 +352,33 @@ const LandingPage = ({ navigate }) => {
                     </View>
                 </View>
 
-                <Text style={styles.livePreviewTitleDemo}>Try It Live - Create Your Digital Card</Text>
-                
-                <View style={styles.setupContainer}>
-                    {/* Interactive Setup Form Column */}
-                    <View style={styles.formColumn}>
-                        <Text style={styles.formTitle}>Build Your Digital Card</Text>
-                        <Text style={styles.formSubtitle}>Fill in your details and see instant preview with QR code</Text>
-
-                        <InputField 
-                            Icon={IconMap.User} name="name" placeholder="Full Name (e.g., Jane Doe)" 
-                            value={formData.name} onChangeText={handleInputChange} 
-                        />
-                        <InputField 
-                            Icon={IconMap.Key} name="title" placeholder="Job Title (e.g., Senior Designer)" 
-                            value={formData.title} onChangeText={handleInputChange} 
-                        />
-                        <InputField 
-                            Icon={IconMap.Briefcase} name="company" placeholder="Company Name" 
-                            value={formData.company} onChangeText={handleInputChange} 
-                        />
-                        <InputField 
-                            Icon={IconMap.Phone} name="phone" placeholder="Phone Number" type="tel" 
-                            value={formData.phone} onChangeText={handleInputChange} 
-                        />
-                        <InputField 
-                            Icon={IconMap.Mail} name="email" placeholder="Email Address" type="email-address" 
-                            value={formData.email} onChangeText={handleInputChange} 
-                        />
-                        <InputField 
-                            Icon={IconMap.Link} name="url" placeholder="Website Link (e.g., example.com)" 
-                            value={formData.url} onChangeText={handleInputChange} 
-                        />
-
-                        <TouchableOpacity
-                            onPress={handleSubmit}
-                            style={styles.submitButton}
-                        >
-                            <Text style={styles.submitButtonText}>Generate My Digital Card</Text>
-                        </TouchableOpacity>
-                    </View>
-
-                    {/* Live Preview Column */}
-                    <View style={styles.previewColumn}>
-                        <Text style={styles.livePreviewTitle}>Live Preview</Text>
-                        <View style={styles.livePreviewPhoneContainer}>
-                            <VCardPreviewCard 
-                                data={formData} 
-                                isInteractive={false} 
-                                style={styles.livePreviewCard}
-                                showQR={true}
+                {/* How It Works Section */}
+                <View style={styles.howItWorksSection}>
+                    <Text style={styles.sectionTitle}>How It Works</Text>
+                    <Text style={styles.sectionSubtitle}>
+                        Get your digital business card up and running in just 4 simple steps
+                    </Text>
+                    
+                    <View style={styles.stepsContainer}>
+                        {HOW_IT_WORKS_DATA.map((step, index) => (
+                            <HowItWorksStep
+                                key={step.step}
+                                step={step.step}
+                                title={step.title}
+                                description={step.description}
+                                icon={step.icon}
+                                isLast={index === HOW_IT_WORKS_DATA.length - 1}
                             />
-                        </View>
-                        <Text style={styles.previewNote}>
-                            {formData.name ? 'QR code contains your contact info' : 'Fill the form to see your QR code'}
-                        </Text>
+                        ))}
                     </View>
+                    
+                    <TouchableOpacity 
+                        style={styles.getStartedButton}
+                        onPress={() => router.push('/register')}
+                    >
+                        <Text style={styles.getStartedButtonText}>Get Started Now</Text>
+                        <Icon name="arrow-right" size={16} color="white" />
+                    </TouchableOpacity>
                 </View>
 
                 {/* Features Section */}
@@ -639,9 +529,98 @@ const App = () => {
     );
 };
 
-// --- Updated StyleSheet with Login Screen Theme ---
+// --- Updated StyleSheet with How It Works Section ---
 const styles = StyleSheet.create({
-     previewQRCode: {
+    // How It Works Styles
+    howItWorksSection: {
+        paddingVertical: 60,
+        paddingHorizontal: 20,
+        backgroundColor: 'white',
+        alignItems: 'center',
+    },
+    stepsContainer: {
+        width: '100%',
+        maxWidth: 800,
+        marginTop: 40,
+    },
+    stepContainer: {
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        marginBottom: 10,
+    },
+    stepContent: {
+        flex: 1,
+        padding: 20,
+        backgroundColor: PRIMARY_LIGHT,
+        borderRadius: 12,
+        marginRight: 20,
+    },
+    stepNumberContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 12,
+    },
+    stepNumber: {
+        fontSize: 32,
+        fontWeight: '800',
+        color: PRIMARY_COLOR,
+        marginRight: 12,
+        fontFamily: 'BHH San Bartle',
+    },
+    stepIcon: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        backgroundColor: PRIMARY_COLOR,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    stepTitle: {
+        fontSize: 20,
+        fontWeight: '700',
+        color: DARK_TEXT,
+        marginBottom: 8,
+        fontFamily: 'BHH San Bartle',
+    },
+    stepDescription: {
+        fontSize: 14,
+        color: MEDIUM_TEXT,
+        lineHeight: 20,
+        fontFamily: 'BHH San Bartle',
+    },
+    stepConnector: {
+        width: 2,
+        height: 60,
+        backgroundColor: PRIMARY_COLOR,
+        position: 'absolute',
+        right: 30,
+        top: 80,
+        opacity: 0.3,
+    },
+    getStartedButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: PRIMARY_COLOR,
+        paddingVertical: 16,
+        paddingHorizontal: 32,
+        borderRadius: 12,
+        marginTop: 40,
+        gap: 12,
+        shadowColor: PRIMARY_COLOR,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+        elevation: 5,
+    },
+    getStartedButtonText: {
+        color: 'white',
+        fontSize: 18,
+        fontWeight: '700',
+        fontFamily: 'BHH San Bartle',
+    },
+
+    // Existing styles remain the same...
+    previewQRCode: {
         alignItems: 'center',
         marginTop: 16,
         padding: 12,
@@ -749,8 +728,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20, 
         marginBottom: 60, 
         margin: 20,
-        maxWidth: 700, // Maximum width for large screens
-        alignSelf: 'center', // Center the container on large screens
+        maxWidth: 700,
+        alignSelf: 'center',
         width: '100%',
     },
     ContactButtonText: { 
@@ -866,136 +845,124 @@ const styles = StyleSheet.create({
         width: '100%',
         maxWidth: 400,
     },
-  // URGENCY BANNER
-  urgencyBanner: {
-    backgroundColor: '#FFFBEB',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#F59E0B',
-    marginBottom: 20,
-  },
-  urgencyText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#D97706',
-    textAlign: 'center',
-    fontFamily: 'BHH San Bartle',
-  },
-
-  // SOCIAL PROOF
-  socialProof: {
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  socialProofText: {
-    fontSize: 14,
-    color: MEDIUM_TEXT,
-    marginBottom: 8,
-    fontFamily: 'BHH San Bartle',
-  },
-  companyLogos: {
-    flexDirection: 'row',
-    gap: 16,
-  },
-  companyLogo: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: DARK_TEXT,
-    fontFamily: 'BHH San Bartle',
-  },
-
-  // HIGHLIGHT TEXT
-  highlight: {
-    color: PRIMARY_COLOR,
-    fontWeight: '700',
-  },
-
-  // BENEFITS GRID
-  benefitsGrid: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 16,
-    marginBottom: 32,
-    flexWrap: 'wrap',
-  },
-  benefitItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'white',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 8,
-    gap: 6,
-  },
-  benefitText: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: DARK_TEXT,
-    fontFamily: 'BHH San Bartle',
-  },
-
-  // IMPROVED CTA BUTTONS
-  primaryCtaButton: {
-    backgroundColor: PRIMARY_COLOR,
-    paddingVertical: 16,
-    paddingHorizontal: 24,
-    borderRadius: 12,
-    alignItems: 'center',
-    shadowColor: PRIMARY_COLOR,
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 8,
-    minWidth: 200,
-  },
-  primaryCtaText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: '700',
-    fontFamily: 'BHH San Bartle',
-  },
-  ctaSubtext: {
-    color: '#E0E7FF',
-    fontSize: 12,
-    marginTop: 4,
-    fontFamily: 'BHH San Bartle',
-  },
-  secondaryCtaButton: {
-    paddingVertical: 16,
-    paddingHorizontal: 24,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: PRIMARY_COLOR,
-    alignItems: 'center',
-    minWidth: 200,
-  },
-  secondaryCtaText: {
-    color: PRIMARY_COLOR,
-    fontSize: 16,
-    fontWeight: '600',
-    fontFamily: 'BHH San Bartle',
-  },
-
-  // TRUST BADGES
-  trustBadges: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 20,
-    marginTop: 24,
-  },
-  trustItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  trustText: {
-    fontSize: 12,
-    color: MEDIUM_TEXT,
-    fontFamily: 'BHH San Bartle',
-  },
-
+    urgencyBanner: {
+        backgroundColor: '#FFFBEB',
+        paddingVertical: 8,
+        paddingHorizontal: 16,
+        borderRadius: 20,
+        borderWidth: 1,
+        borderColor: '#F59E0B',
+        marginBottom: 20,
+    },
+    urgencyText: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: '#D97706',
+        textAlign: 'center',
+        fontFamily: 'BHH San Bartle',
+    },
+    socialProof: {
+        alignItems: 'center',
+        marginBottom: 24,
+    },
+    socialProofText: {
+        fontSize: 14,
+        color: MEDIUM_TEXT,
+        marginBottom: 8,
+        fontFamily: 'BHH San Bartle',
+    },
+    companyLogos: {
+        flexDirection: 'row',
+        gap: 16,
+    },
+    companyLogo: {
+        fontSize: 12,
+        fontWeight: '600',
+        color: DARK_TEXT,
+        fontFamily: 'BHH San Bartle',
+    },
+    highlight: {
+        color: PRIMARY_COLOR,
+        fontWeight: '700',
+    },
+    benefitsGrid: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        gap: 16,
+        marginBottom: 32,
+        flexWrap: 'wrap',
+    },
+    benefitItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: 'white',
+        paddingVertical: 8,
+        paddingHorizontal: 12,
+        borderRadius: 8,
+        gap: 6,
+    },
+    benefitText: {
+        fontSize: 12,
+        fontWeight: '500',
+        color: DARK_TEXT,
+        fontFamily: 'BHH San Bartle',
+    },
+    primaryCtaButton: {
+        backgroundColor: PRIMARY_COLOR,
+        paddingVertical: 16,
+        paddingHorizontal: 24,
+        borderRadius: 12,
+        alignItems: 'center',
+        shadowColor: PRIMARY_COLOR,
+        shadowOffset: { width: 0, height: 6 },
+        shadowOpacity: 0.3,
+        shadowRadius: 12,
+        elevation: 8,
+        minWidth: 200,
+    },
+    primaryCtaText: {
+        color: 'white',
+        fontSize: 18,
+        fontWeight: '700',
+        fontFamily: 'BHH San Bartle',
+    },
+    ctaSubtext: {
+        color: '#E0E7FF',
+        fontSize: 12,
+        marginTop: 4,
+        fontFamily: 'BHH San Bartle',
+    },
+    secondaryCtaButton: {
+        paddingVertical: 16,
+        paddingHorizontal: 24,
+        borderRadius: 12,
+        borderWidth: 1,
+        borderColor: PRIMARY_COLOR,
+        alignItems: 'center',
+        minWidth: 200,
+    },
+    secondaryCtaText: {
+        color: PRIMARY_COLOR,
+        fontSize: 16,
+        fontWeight: '600',
+        fontFamily: 'BHH San Bartle',
+    },
+    trustBadges: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        gap: 20,
+        marginTop: 24,
+    },
+    trustItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
+    },
+    trustText: {
+        fontSize: 12,
+        color: MEDIUM_TEXT,
+        fontFamily: 'BHH San Bartle',
+    },
     ctaButton: {
         flex: 1,
         paddingVertical: 14,
@@ -1034,15 +1001,6 @@ const styles = StyleSheet.create({
         color: PRIMARY_COLOR,
         fontSize: 16,
         fontWeight: '600',
-        fontFamily: 'BHH San Bartle',
-    },
-    livePreviewTitleDemo: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: DARK_TEXT,
-        textAlign: 'center',
-        marginTop: 20,
-        marginBottom: 20,
         fontFamily: 'BHH San Bartle',
     },
     setupContainer: {
@@ -1516,6 +1474,9 @@ const styles = StyleSheet.create({
         color: GREEN_SUCCESS,
         flex: 1,
         fontFamily: 'BHH San Bartle',
+    },
+    landingScrollViewContent: {
+        flexGrow: 1,
     }
 });
 

@@ -123,7 +123,7 @@ value={email}/>
    setModalVisible1(!modalVisible1);
   }}> 
 <View style={styles.container}>
-<Text style={styles.logo}>Crime Report<Text style={styles.logoSub}> App</Text></Text>
+<Text style={styles.logo}>V-Card<Text style={styles.logoSub}> App</Text></Text>
 <View style={styles.form}>
 <Text style={styles.subtitle}>Enter OTP</Text>
 <TextInput
@@ -138,7 +138,7 @@ value={email}/>
 </TouchableOpacity>
     {/* Back Button for OTP verification*/}
 <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-<Ionicons name="arrow-back" size={20} color="#4F46E5" />
+<Ionicons name="arrow-left" size={20} color="#4F46E5" />
 <Text style={styles.backText}>Back</Text>
 </TouchableOpacity>
 </View>
@@ -156,7 +156,7 @@ value={email}/>
     setModalVisible2(!modalVisible2);}}> 
 
  <View style={styles.container}>
-<Text style={styles.logo}>Crime Report<Text style={styles.logoSub}> App</Text></Text>
+<Text style={styles.logo}>V-Card<Text style={styles.logoSub}> App</Text></Text>
 <Text style={styles.subtitle}>Enter your new password</Text>
 <View style={styles.form}>
   <View style={{position: 'relative'}} >
@@ -188,7 +188,7 @@ value={email}/>
   onPress={() => setShowPassword(!showPassword)}
   style={styles.eyeIcon}>
 <Ionicons
-  name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+  name={showPassword ? 'eye-slash' : 'eye'}
   size={22}
   color="#fff"/>
 </Pressable>
@@ -197,7 +197,7 @@ value={email}/>
 <Text style={styles.buttonText}>Reset Password</Text>
 </TouchableOpacity>
 <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-<Ionicons name="arrow-back" size={20} color="#4F46E5" />
+<Ionicons name="arrow-left" size={20} color="#4F46E5" />
 <Text style={styles.backText}>Back</Text>
 </TouchableOpacity>
 </View>
