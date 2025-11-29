@@ -5,6 +5,10 @@ import QRCode from 'react-native-qrcode-svg';
 import {triggerLocalNotification} from '../../utils/notifications';
 import { useRouter } from 'expo-router';
 import {BASE_URL} from '../../utils/config';
+import { getItem } from '../../utils/storage';
+import { jwtDecode } from 'jwt-decode';
+
+
 
 // --- Color Palette and Constants ---
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -220,6 +224,9 @@ const InputField = ({ Icon, name, placeholder, type = 'default', value, onChange
 );
 
 const LandingPage = ({ navigate }) => {
+     const [hasToken, setHasToken] = useState(false);
+     const [autoRedirectDone, setAutoRedirectDone] = useState(false);
+
     // Contact form state
     const [contactData, setContactData] = useState({
         username: '',
@@ -254,6 +261,67 @@ const LandingPage = ({ navigate }) => {
        
     };
 
+    const handleDashPress = async () =>{
+    const token = await getItem('token');
+    const authenticated = !!token;
+    setHasToken(authenticated);
+
+    if (token) {
+    const decoded = jwtDecode(token);
+    const agility = decoded.agility; 
+    setHasToken(true);
+        switch (agility) {
+        case 'supa':
+           triggerLocalNotification('success','Welcome Back!');
+          router.push('/dashbord');
+          break;
+        case 'yuza':
+           triggerLocalNotification('success','Welcome Back!');
+          router.push('/dashboard');
+          break;
+        case 'staff':
+             triggerLocalNotification('success','Welcome Back!');
+          router.push('/dashbard');
+          break;
+      }}
+      else{
+    triggerLocalNotification('Ooops!','You must Login First');
+    }}
+    
+    useEffect(() => {
+  const checkToken = async () => {
+    const token = await getItem('token');
+
+    if (!token) {
+      setHasToken(false);
+      return;
+    }
+
+    const decoded = jwtDecode(token);
+    const agility = decoded.agility;
+    setHasToken(true);
+
+    if (!autoRedirectDone) {
+        switch (agility) {
+        case 'supa':
+          router.push('/dashbord');
+          break;
+        case 'yuza':
+          router.push('/dashboard');
+          break;
+        case 'staff':
+          router.push('/dashbard');
+          break;
+      }
+
+      setAutoRedirectDone(true);
+    }
+  };
+
+  checkToken();
+}, []);
+
+    
     return (
         <SafeAreaView style={styles.safeArea}>
             <ScrollView contentContainerStyle={styles.landingScrollViewContent}>
@@ -371,14 +439,14 @@ const LandingPage = ({ navigate }) => {
                             />
                         ))}
                     </View>
-                    
-                    <TouchableOpacity 
-                        style={styles.getStartedButton}
-                        onPress={() => router.push('/register')}
-                    >
-                        <Text style={styles.getStartedButtonText}>Get Started Now</Text>
-                        <Icon name="arrow-right" size={16} color="white" />
+              {hasToken && autoRedirectDone && (
+                    <TouchableOpacity style={styles.getStartedButton} onPress={handleDashPress} >
+                        <Text style={styles.getStartedButtonText}>Go To Dashboard</Text>
+                        <Icon name="home" size={16} color="white" />
                     </TouchableOpacity>
+
+                 )}
+
                 </View>
 
                 {/* Features Section */}
